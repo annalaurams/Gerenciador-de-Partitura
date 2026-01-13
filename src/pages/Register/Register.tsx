@@ -12,7 +12,7 @@ export default function Register() {
 
   async function handleRegister() {
     try {
-      await api.post("/register", {
+      await api.post("/auth/register", {
         name,
         email,
         password,
@@ -20,15 +20,19 @@ export default function Register() {
 
       alert("Conta criada com sucesso!");
       navigate("/");
-    } catch {
-      alert("Erro ao criar conta");
+    } catch (error: any) {
+      console.error("REGISTER ERROR:", error);
+      alert(
+        error.response?.data?.message ||
+        "Erro desconhecido ao criar conta"
+      );
+
     }
   }
 
   return (
     <div className="register-container">
       <div className="register-card">
-
         <div className="logo-area">
           <div className="logo-icon">🎵</div>
           <h1>Clave</h1>
@@ -58,7 +62,9 @@ export default function Register() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button onClick={handleRegister}>Criar conta</button>
+        <button type="button" onClick={handleRegister}>
+          Criar conta
+        </button>
 
         <span className="login-link" onClick={() => navigate("/")}>
           Já tem uma conta? <strong>Entrar</strong>
