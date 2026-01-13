@@ -1,17 +1,15 @@
 import { useState } from "react";
 import "./Login.css";
 import { api } from "../../services/api";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Login() {
-  const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
     try {
-      const response = await api.post("/login", {
+      const response = await api.post("/auth/login", {
         email,
         password,
       });
@@ -20,16 +18,17 @@ export default function Login() {
       localStorage.setItem("token", token);
 
       alert("Login realizado com sucesso!");
-
-    } catch {
-      alert("Email ou senha inválidos");
+    } catch (error: any) {
+      console.error(error);
+      alert(
+        error.response?.data?.message || "Email ou senha inválidos"
+      );
     }
   }
 
   return (
     <div className="login-container">
       <div className="login-card">
-        {}
         <div className="logo-area">
           <div className="logo-icon">🎵</div>
           <h1>Clave</h1>
@@ -61,7 +60,9 @@ export default function Login() {
             Esqueci minha senha
           </span>
 
-          <button onClick={handleLogin}>Entrar</button>
+          <button type="button" onClick={handleLogin}>
+            Entrar
+          </button>
         </div>
 
         <p className="footer-text">
