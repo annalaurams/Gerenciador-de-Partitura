@@ -53,6 +53,14 @@ export class AuthService {
       email: user.email,
     });
 
-    return { token };
+    return {
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    };
+
   }
 }
