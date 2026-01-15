@@ -7,4 +7,4 @@ export interface CreateScoreDTO {
   filePath?: string;
 }
 
-export interface UpdateScoreDTO extends Partial<CreateScoreDTO> {}
+export type UpdateScoreDTO = Partial<CreateScoreDTO>;

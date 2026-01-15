@@ -1,11 +1,12 @@
 import multer from "multer";
 import path from "path";
 import crypto from "crypto";
+import { Request } from "express";
 
 export const uploadConfig = {
   storage: multer.diskStorage({
     destination: path.resolve(__dirname, "..", "uploads", "scores"),
-    filename(req, file, callback) {
+    filename(_req, file, callback) {
       const fileHash = crypto.randomBytes(10).toString("hex");
       const fileName = `${fileHash}-${file.originalname}`;
       callback(null, fileName);
@@ -13,7 +14,7 @@ export const uploadConfig = {
   }),
 
   fileFilter(
-    req: any,
+    _req: Request,
     file: Express.Multer.File,
     callback: multer.FileFilterCallback
   ) {
@@ -34,6 +35,6 @@ export const uploadConfig = {
   },
 
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB
+    fileSize: 10 * 1024 * 1024,
   },
 };

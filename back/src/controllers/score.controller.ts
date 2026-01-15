@@ -14,14 +14,19 @@ export class ScoreController {
     try {
       const data = {
         ...req.body,
-        filePath: req.file ? req.file.filename : undefined,
+        filePath: req.file?.filename,
       };
 
       const score = await this.service.create(data);
       return res.status(201).json(score);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating score:", error);
-      return res.status(400).json({ message: error.message });
+
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+
+      return res.status(400).json({ message: "Erro ao criar partitura" });
     }
   };
 
@@ -29,35 +34,17 @@ export class ScoreController {
     try {
       const scores = await this.service.findAll();
       return res.json(scores);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error finding scores:", error);
-      return res.status(400).json({ message: error.message });
+
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+
+      return res.status(400).json({ message: "Erro ao buscar partituras" });
     }
   };
 
-  // findById = async (req: Request, res: Response) => {
-  //   try {
-  //     const score = await this.service.findById(req.params.id);
-
-  //     if (!score) {
-  //       return res.status(404).json({ message: "Score not found" });
-  //     }
-
-  //     // Adiciona a URL completa do arquivo
-  //     const scoreWithUrl = {
-  //       ...score,
-  //       fileName: score.filePath, // 👈 Envia como fileName para o front
-  //       fileUrl: score.filePath
-  //         ? `http://localhost:3333/uploads/scores/${score.filePath}`
-  //         : null,
-  //     };
-
-  //     return res.json(scoreWithUrl);
-  //   } catch (error: any) {
-  //     console.error("Error finding score:", error);
-  //     return res.status(400).json({ message: error.message });
-  //   }
-  // };
   findById = async (req: Request, res: Response) => {
     const score = await this.service.findById(req.params.id);
 
@@ -73,12 +60,10 @@ export class ScoreController {
     });
   };
 
-
   update = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
 
-      // Se tem arquivo novo, deleta o antigo
       if (req.file) {
         const oldScore = await this.service.findById(id);
 
@@ -94,21 +79,25 @@ export class ScoreController {
 
           if (fs.existsSync(oldFilePath)) {
             fs.unlinkSync(oldFilePath);
-            console.log("🗑️ Arquivo antigo deletado:", oldScore.filePath);
           }
         }
       }
 
       const data = {
         ...req.body,
-        filePath: req.file ? req.file.filename : undefined,
+        filePath: req.file?.filename,
       };
 
       const score = await this.service.update(id, data);
       return res.json(score);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating score:", error);
-      return res.status(400).json({ message: error.message });
+
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+
+      return res.status(400).json({ message: "Erro ao atualizar partitura" });
     }
   };
 
@@ -116,7 +105,6 @@ export class ScoreController {
     try {
       const { id } = req.params;
 
-      // Busca a partitura para pegar o caminho do arquivo
       const score = await this.service.findById(id);
 
       if (score?.filePath) {
@@ -131,15 +119,19 @@ export class ScoreController {
 
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
-          console.log("🗑️ Arquivo deletado:", score.filePath);
         }
       }
 
       await this.service.delete(id);
       return res.status(204).send();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting score:", error);
-      return res.status(400).json({ message: error.message });
+
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+
+      return res.status(400).json({ message: "Erro ao excluir partitura" });
     }
   };
 }

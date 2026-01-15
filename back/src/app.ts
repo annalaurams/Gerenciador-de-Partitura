@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import path from "path";
 import { scoreRoutes } from "./routes/score.routes";
@@ -6,14 +6,13 @@ import { authRoutes } from "./routes/auth.routes";
 
 export const app = express();
 
-
+// 📁 Arquivos públicos
 app.use(
   "/files",
   express.static(path.resolve(__dirname, "..", "uploads"))
 );
 
-
-// 🔥 CORS permissivo para desenvolvimento
+// 🔥 CORS
 app.use(
   cors({
     origin: true,
@@ -23,17 +22,11 @@ app.use(
   })
 );
 
-// Parse JSON
+// JSON
 app.use(express.json());
 
-// 📁 SERVIR ARQUIVOS ESTÁTICOS (UPLOADS)
-app.use(
-  "/uploads/scores",
-  express.static(path.resolve(__dirname, "..", "uploads", "scores"))
-);
-
-// Logs de debug
-app.use((req, _res, next) => {
+// Logs
+app.use((req: Request, _res: Response, next: NextFunction) => {
   const timestamp = new Date().toLocaleTimeString();
   console.log(`\n[${timestamp}] ➡️ ${req.method} ${req.url}`);
   console.log("Origin:", req.headers.origin);
@@ -45,9 +38,8 @@ app.use((req, _res, next) => {
 app.use("/auth", authRoutes);
 app.use("/scores", scoreRoutes);
 
-// Rota de teste
-app.get("/health", (_req, res) => {
-  console.log("✅ Health check chamado");
+// Health
+app.get("/health", (_req: Request, res: Response) => {
   res.json({
     status: "ok",
     timestamp: new Date().toISOString(),
@@ -55,18 +47,20 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// Handler de erro global
+// ❌ Handler global de erro
 app.use(
-  (
-    err: any,
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => {
+  (err: unknown, _req: Request, res: Response) => {
     console.error("💥 ERRO NÃO TRATADO:", err);
-    res.status(500).json({
+
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message: "Internal server error",
+        error: err.message,
+      });
+    }
+
+    return res.status(500).json({
       message: "Internal server error",
-      error: err.message,
     });
   }
 );
