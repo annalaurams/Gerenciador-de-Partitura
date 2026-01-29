@@ -12,6 +12,7 @@ type Score = {
   description?: string;
   fileName?: string;
   fileUrl?: string;
+  filePath?: string;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -28,6 +29,7 @@ export default function ScoreDetails() {
     async function loadScore() {
       try {
         const response = await api.get<Score>(`/scores/${id}`);
+        console.log("Score carregado:", response.data); // Debug
         setScore(response.data);
       } catch (err) {
         console.error(err);
@@ -84,6 +86,16 @@ export default function ScoreDetails() {
     });
   }
 
+  // Extrair nome do arquivo do filePath ou usar fileName
+  function getFileName(): string {
+    if (score?.fileName) return score.fileName;
+    if (score?.filePath) {
+      const parts = score.filePath.split('/');
+      return parts[parts.length - 1];
+    }
+    return "Arquivo da partitura";
+  }
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -102,6 +114,8 @@ export default function ScoreDetails() {
       </div>
     );
   }
+
+  const hasFile = score.fileUrl || score.filePath;
 
   return (
     <div className="score-details-page">
@@ -184,7 +198,7 @@ export default function ScoreDetails() {
         )}
 
         {/* ARQUIVO */}
-        {score.fileName && score.fileUrl && (
+        {hasFile && (
           <div className="file-section">
             <h2 className="section-title">Arquivo</h2>
 
@@ -193,7 +207,7 @@ export default function ScoreDetails() {
                 <div className="file-icon-wrapper">
                   <span>📄</span>
                 </div>
-                <span className="file-name">{score.fileName}</span>
+                <span className="file-name">{getFileName()}</span>
               </div>
 
               <button className="btn-download" onClick={handleDownload}>

@@ -14,8 +14,8 @@ model Score {
   tone        String?
   composer    String?
   description String?  @db.VarChar(100)
-  filePath    String?  // 👈 MUDOU DE fileName para filePath
-
+  filePath    String?  
+  fileName    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

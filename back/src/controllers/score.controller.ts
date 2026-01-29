@@ -10,15 +10,25 @@ export class ScoreController {
     this.service = new ScoreService();
   }
 
+  // =========================
+  // CREATE
+  // =========================
   create = async (req: Request, res: Response) => {
     try {
       const data = {
         ...req.body,
-        filePath: req.file?.filename,
+        filePath: req.file?.filename, // 🔥 SÓ o filename, SEM "scores/"
+        fileName: req.file?.originalname,
       };
 
       const score = await this.service.create(data);
-      return res.status(201).json(score);
+      
+      return res.status(201).json({
+        ...score,
+        fileUrl: score.filePath
+          ? `${process.env.API_URL}/files/${score.filePath}`
+          : null,
+      });
     } catch (error: unknown) {
       console.error("Error creating score:", error);
 
@@ -30,10 +40,21 @@ export class ScoreController {
     }
   };
 
+  // =========================
+  // FIND ALL
+  // =========================
   findAll = async (_req: Request, res: Response) => {
     try {
       const scores = await this.service.findAll();
-      return res.json(scores);
+
+      const scoresWithFileUrl = scores.map((score) => ({
+        ...score,
+        fileUrl: score.filePath
+          ? `${process.env.API_URL}/files/${score.filePath}`
+          : null,
+      }));
+
+      return res.json(scoresWithFileUrl);
     } catch (error: unknown) {
       console.error("Error finding scores:", error);
 
@@ -45,29 +66,43 @@ export class ScoreController {
     }
   };
 
+  // =========================
+  // FIND BY ID
+  // =========================
   findById = async (req: Request, res: Response) => {
-    const score = await this.service.findById(req.params.id);
+    try {
+      const score = await this.service.findById(req.params.id);
 
-    if (!score) {
-      return res.status(404).json({ message: "Partitura não encontrada" });
+      if (!score) {
+        return res.status(404).json({ message: "Partitura não encontrada" });
+      }
+
+      return res.json({
+        ...score,
+        fileUrl: score.filePath
+          ? `${process.env.API_URL}/files/${score.filePath}`
+          : null,
+      });
+    } catch (error: unknown) {
+      console.error("Error finding score:", error);
+
+      return res.status(400).json({ message: "Erro ao buscar partitura" });
     }
-
-    return res.json({
-      ...score,
-      fileUrl: score.filePath
-        ? `${process.env.API_URL}/files/${score.filePath}`
-        : null,
-    });
   };
 
+  // =========================
+  // UPDATE
+  // =========================
   update = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
 
+      // 🗑️ Remove arquivo antigo se subir um novo
       if (req.file) {
         const oldScore = await this.service.findById(id);
 
         if (oldScore?.filePath) {
+          // 🔥 O caminho completo do arquivo antigo
           const oldFilePath = path.resolve(
             __dirname,
             "..",
@@ -85,11 +120,20 @@ export class ScoreController {
 
       const data = {
         ...req.body,
-        filePath: req.file?.filename,
+        ...(req.file && {
+          filePath: req.file.filename, // 🔥 SÓ o filename, SEM "scores/"
+          fileName: req.file.originalname,
+        }),
       };
 
       const score = await this.service.update(id, data);
-      return res.json(score);
+      
+      return res.json({
+        ...score,
+        fileUrl: score.filePath
+          ? `${process.env.API_URL}/files/${score.filePath}`
+          : null,
+      });
     } catch (error: unknown) {
       console.error("Error updating score:", error);
 
@@ -101,6 +145,9 @@ export class ScoreController {
     }
   };
 
+  // =========================
+  // DELETE
+  // =========================
   delete = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
@@ -108,6 +155,7 @@ export class ScoreController {
       const score = await this.service.findById(id);
 
       if (score?.filePath) {
+        // 🔥 O caminho completo do arquivo
         const filePath = path.resolve(
           __dirname,
           "..",

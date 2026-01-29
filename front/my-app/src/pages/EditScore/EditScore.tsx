@@ -19,6 +19,7 @@ type Score = {
   description: string;
   fileName?: string;
   fileUrl?: string;
+  filePath?: string;
 };
 
 type ScoreFormData = {
@@ -96,6 +97,8 @@ export default function EditScore() {
         const response = await api.get<Score>(`/scores/${id}`);
         const score = response.data;
 
+        console.log("Score carregado no edit:", score);
+
         setFormData({
           name: score.name || "",
           composer: score.composer || "",
@@ -105,14 +108,22 @@ export default function EditScore() {
           file: null,
         });
 
-        if (score.fileName && score.fileUrl) {
+        if (score.fileUrl) {
+          const fileName = score.fileName || extractFileNameFromUrl(score.fileUrl);
           setCurrentFile({
-            name: score.fileName,
+            name: fileName,
             url: score.fileUrl,
+          });
+        } else if (score.filePath) {
+          const fileName = score.fileName || extractFileNameFromPath(score.filePath);
+          const fileUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:3333'}/files/${score.filePath}`;
+          setCurrentFile({
+            name: fileName,
+            url: fileUrl,
           });
         }
       } catch (error) {
-        console.error(error);
+        console.error("Erro ao carregar partitura:", error);
         alert("Erro ao carregar partitura");
         navigate("/scores");
       } finally {
@@ -122,6 +133,16 @@ export default function EditScore() {
 
     loadScore();
   }, [id, navigate]);
+
+  function extractFileNameFromUrl(url: string): string {
+    const parts = url.split('/');
+    return decodeURIComponent(parts[parts.length - 1]);
+  }
+
+  function extractFileNameFromPath(path: string): string {
+    const parts = path.split('/');
+    return decodeURIComponent(parts[parts.length - 1]);
+  }
 
   function handleChange(
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -190,6 +211,11 @@ export default function EditScore() {
     e.preventDefault();
     if (!id) return;
 
+    if (!formData.name.trim()) {
+      alert("Por favor, preencha o nome da partitura.");
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -213,11 +239,15 @@ export default function EditScore() {
       alert("Partitura atualizada com sucesso!");
       navigate(`/scores/${id}`);
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao salvar:", error);
       alert("Erro ao salvar alterações");
     } finally {
       setSubmitting(false);
     }
+  }
+
+  function handleCancel() {
+    navigate(`/scores/${id}`);
   }
 
   if (loading) {
@@ -235,10 +265,11 @@ export default function EditScore() {
 
         <form className="edit-score-form" onSubmit={handleSubmit}>
           <div className="edit-form-group">
-            <label className="edit-form-label">Nome</label>
+            <label className="edit-form-label">Nome da partitura</label>
             <input
               className="edit-form-input"
               name="name"
+              placeholder="Ex: Für Elise"
               value={formData.name}
               onChange={handleChange}
               required
@@ -250,6 +281,7 @@ export default function EditScore() {
             <input
               className="edit-form-input"
               name="composer"
+              placeholder="Ex: Ludwig van Beethoven"
               value={formData.composer}
               onChange={handleChange}
             />
@@ -296,6 +328,7 @@ export default function EditScore() {
             <textarea
               className="edit-form-textarea"
               name="description"
+              placeholder="Adicione detalhes sobre a partitura..."
               value={formData.description}
               onChange={handleChange}
             />
@@ -315,17 +348,16 @@ export default function EditScore() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="edit-file-link"
-                      onClick={(e) => e.stopPropagation()}
                     >
                       Visualizar arquivo
                     </a>
                   </div>
-
                 </div>
                 <button
                   type="button"
                   className="btn-edit-remove-file"
                   onClick={handleRemoveCurrentFile}
+                  title="Remover arquivo"
                 >
                   ✕
                 </button>
@@ -351,6 +383,7 @@ export default function EditScore() {
                   type="button"
                   className="btn-edit-remove-file"
                   onClick={handleRemoveNewFile}
+                  title="Remover novo arquivo"
                 >
                   ✕
                 </button>
@@ -393,7 +426,7 @@ export default function EditScore() {
             <button
               type="button"
               className="btn-edit-cancel"
-              onClick={() => navigate(`/scores/${id}`)}
+              onClick={handleCancel}
               disabled={submitting}
             >
               Cancelar
