@@ -365,7 +365,7 @@ export default function EditScore() {
             </div>
           )}
 
-          {/* NOVO ARQUIVO */}
+          {}
           {formData.file && (
             <div className="edit-form-group">
               <label className="edit-form-label">Novo arquivo</label>

@@ -16,7 +16,6 @@ export default function Scores() {
   const [scores, setScores] = useState<Score[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Pega o nome do usuário (pode vir do contexto ou localStorage)
 const user = JSON.parse(localStorage.getItem("user") || "{}");
 const userName = user.name || "Usuário";
 
@@ -74,10 +73,7 @@ const userName = user.name || "Usuário";
             Nova Partitura
           </button>
 
-          {/* <button className="btn-filters">
-            <span className="filter-icon">⚙</span>
-            Filtros
-          </button> */}
+          {}
 
           <div className="user-info">
             <div className="avatar">
@@ -121,14 +117,14 @@ const userName = user.name || "Usuário";
 
                   {score.instrument && (
                     <div className="meta-item">
-                      <span className="meta-icon">🎹</span>
+                      <span className="meta-icon"> </span>
                       <span className="meta-text">{score.instrument}</span>
                     </div>
                   )}
 
                   {score.tone && (
                     <div className="meta-item">
-                      <span className="meta-icon">🔑</span>
+                      <span className="meta-icon"> </span>
                       <span className="meta-text">{score.tone}</span>
                     </div>
                   )}

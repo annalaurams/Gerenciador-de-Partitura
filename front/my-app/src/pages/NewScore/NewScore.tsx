@@ -26,7 +26,6 @@ export default function NewScore() {
     file: null,
   });
 
-  // Lista de instrumentos
   const instruments = [
     "Piano",
     "Violão",
@@ -42,7 +41,6 @@ export default function NewScore() {
     "Teclado",
   ];
 
-  // Lista de tons
   const tones = [
     "Dó Maior (C)",
     "Ré Maior (D)",

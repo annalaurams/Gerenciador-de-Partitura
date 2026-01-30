@@ -10,14 +10,11 @@ export class ScoreController {
     this.service = new ScoreService();
   }
 
-  // =========================
-  // CREATE
-  // =========================
   create = async (req: Request, res: Response) => {
     try {
       const data = {
         ...req.body,
-        filePath: req.file?.filename, // 🔥 SÓ o filename, SEM "scores/"
+        filePath: req.file?.filename,
         fileName: req.file?.originalname,
       };
 
@@ -40,9 +37,6 @@ export class ScoreController {
     }
   };
 
-  // =========================
-  // FIND ALL
-  // =========================
   findAll = async (_req: Request, res: Response) => {
     try {
       const scores = await this.service.findAll();
@@ -66,9 +60,6 @@ export class ScoreController {
     }
   };
 
-  // =========================
-  // FIND BY ID
-  // =========================
   findById = async (req: Request, res: Response) => {
     try {
       const score = await this.service.findById(req.params.id);
@@ -90,19 +81,14 @@ export class ScoreController {
     }
   };
 
-  // =========================
-  // UPDATE
-  // =========================
   update = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
 
-      // 🗑️ Remove arquivo antigo se subir um novo
       if (req.file) {
         const oldScore = await this.service.findById(id);
 
         if (oldScore?.filePath) {
-          // 🔥 O caminho completo do arquivo antigo
           const oldFilePath = path.resolve(
             __dirname,
             "..",
@@ -145,9 +131,6 @@ export class ScoreController {
     }
   };
 
-  // =========================
-  // DELETE
-  // =========================
   delete = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
@@ -155,7 +138,6 @@ export class ScoreController {
       const score = await this.service.findById(id);
 
       if (score?.filePath) {
-        // 🔥 O caminho completo do arquivo
         const filePath = path.resolve(
           __dirname,
           "..",

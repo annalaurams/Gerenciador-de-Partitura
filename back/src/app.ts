@@ -6,7 +6,6 @@ import { authRoutes } from "./routes/auth.routes";
 
 export const app = express();
 
-// 📁 Arquivos públicos - CORRIGIDO para apontar para uploads/scores
 app.use(
   "/files",
   express.static(path.resolve(__dirname, "..", "uploads", "scores"), {
@@ -14,7 +13,6 @@ app.use(
   })
 );
 
-// 🔥 CORS
 app.use(
   cors({
     origin: true,
@@ -24,21 +22,18 @@ app.use(
   })
 );
 
-// JSON
 app.use(express.json());
 
-// Logs
 app.use((req: Request, _res: Response, next: NextFunction) => {
   const timestamp = new Date().toLocaleTimeString();
-  console.log(`\n[${timestamp}] ➡️ ${req.method} ${req.url}`);
-  console.log("Origin:", req.headers.origin);
+  // console.log(`\n[${timestamp}] ${req.method} ${req.url}`);
+  // console.log("Origin:", req.headers.origin);
   if (req.method !== "GET") {
     console.log("Body:", req.body);
   }
   next();
 });
 
-// Rotas
 app.use("/auth", authRoutes);
 app.use("/scores", scoreRoutes);
 
@@ -51,10 +46,8 @@ app.get("/health", (_req: Request, res: Response) => {
   });
 });
 
-// ❌ Handler global de erro
 app.use(
   (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-    console.error("💥 ERRO NÃO TRATADO:", err);
 
     if (err instanceof Error) {
       return res.status(500).json({

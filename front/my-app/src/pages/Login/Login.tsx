@@ -7,7 +7,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate(); // 👈 hook de navegação
+  const navigate = useNavigate(); 
 
   async function handleLogin() {
     try {
@@ -24,7 +24,7 @@ export default function Login() {
 
       alert("Login realizado com sucesso!");
 
-      // ✅ REDIRECIONA PARA A LISTA DE PARTITURAS
+    
       navigate("/scores");
     } catch (error: any) {
       console.error(error);
@@ -64,9 +64,7 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          {/* <span className="forgot-password">
-            Esqueci minha senha
-          </span> */}
+          {}
 
           <button type="button" onClick={handleLogin}>
             Entrar

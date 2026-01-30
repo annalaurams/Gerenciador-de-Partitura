@@ -5,8 +5,6 @@ import type { RegisterDTO, LoginDTO } from "../types/auth.types";
 
 export class AuthService {
   async register(data: RegisterDTO) {
-    console.log("🧠 AuthService.register");
-
     const userExists = await prisma.user.findUnique({
       where: { email: data.email },
     });
@@ -29,7 +27,6 @@ export class AuthService {
   }
 
   async login(data: LoginDTO) {
-    console.log("🧠 AuthService.login");
 
     const user = await prisma.user.findUnique({
       where: { email: data.email },

@@ -29,7 +29,7 @@ export default function ScoreDetails() {
     async function loadScore() {
       try {
         const response = await api.get<Score>(`/scores/${id}`);
-        console.log("Score carregado:", response.data); // Debug
+        // console.log("Score carregado:", response.data); 
         setScore(response.data);
       } catch (err) {
         console.error(err);
@@ -86,7 +86,6 @@ export default function ScoreDetails() {
     });
   }
 
-  // Extrair nome do arquivo do filePath ou usar fileName
   function getFileName(): string {
     if (score?.fileName) return score.fileName;
     if (score?.filePath) {
@@ -149,7 +148,7 @@ export default function ScoreDetails() {
           <div className="info-grid">
             <div className="info-box">
               <div className="info-box-label">
-                <span className="info-box-icon">🎹</span>
+                <span className="info-box-icon"></span>
                 Instrumento
               </div>
               <div className="info-box-value">
@@ -159,7 +158,7 @@ export default function ScoreDetails() {
 
             <div className="info-box">
               <div className="info-box-label">
-                <span className="info-box-icon">🔑</span>
+                <span className="info-box-icon"></span>
                 Tom
               </div>
               <div className="info-box-value">
@@ -169,7 +168,7 @@ export default function ScoreDetails() {
 
             <div className="info-box">
               <div className="info-box-label">
-                <span className="info-box-icon">📅</span>
+                <span className="info-box-icon"></span>
                 Criado em
               </div>
               <div className="info-box-value">
@@ -179,7 +178,7 @@ export default function ScoreDetails() {
 
             <div className="info-box">
               <div className="info-box-label">
-                <span className="info-box-icon">📅</span>
+                <span className="info-box-icon"></span>
                 Atualizado
               </div>
               <div className="info-box-value">
@@ -221,12 +220,12 @@ export default function ScoreDetails() {
         {/* AÇÕES */}
         <div className="action-buttons">
           <button className="btn-edit" onClick={handleEdit}>
-            <span className="action-icon">✏️</span>
+            <span className="action-icon"></span>
             Editar
           </button>
 
           <button className="btn-delete" onClick={handleDelete}>
-            <span className="action-icon">🗑️</span>
+            <span className="action-icon"></span>
             Excluir
           </button>
         </div>
