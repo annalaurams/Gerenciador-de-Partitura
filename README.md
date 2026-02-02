@@ -1,6 +1,6 @@
 # Gerenciador de Partituras (Clave)
 
-O **Gerenciador de Partituras** é uma aplicação web full stack criada para organizar, armazenar e gerenciar partituras musicais.
+O Gerenciador de Partituras é uma aplicação web full stack criada para organizar, armazenar e gerenciar partituras musicais.
 
 ## Sumário
 
@@ -37,8 +37,6 @@ O **Gerenciador de Partituras** é uma aplicação web full stack criada para or
 - Download do arquivo associado à partitura
 - Visualização de arquivo anexado
 
----
-
 ## Tecnologias e Ferramentas
 
 | Categoria | Tecnologias |
@@ -46,8 +44,6 @@ O **Gerenciador de Partituras** é uma aplicação web full stack criada para or
 | **Backend** | Node.js, TypeScript, Express, Prisma ORM, JWT (jsonwebtoken), bcrypt, Multer, ts-node-dev, ESLint |
 | **Frontend** | React, TypeScript, React Router DOM, Axios, CSS3 |
 | **Banco de Dados** | PostgreSQL |
-
----
 
 ## Modelos do Banco de Dados
 
@@ -76,8 +72,6 @@ O **Gerenciador de Partituras** é uma aplicação web full stack criada para or
 | `fileName` | String | Nome original do arquivo |
 | `createdAt` | DateTime | Data de criação |
 | `updatedAt` | DateTime | Data da última atualização |
-
----
 
 ## Como Rodar o Projeto
 
@@ -111,7 +105,7 @@ npm install
 
 3. Crie o arquivo `.env` na raiz da pasta `back`:
 ```env
-DATABASE_URL="postgresql://usuario:senha@localhost:5432/gerenciador_partituras"
+DATABASE_URL="postgresql://usuario:senha@localhost:5432/partituras"
 JWT_SECRET="sua-chave-secreta-aqui"
 API_URL="http://localhost:3333"
 PORT=3333
@@ -153,7 +147,6 @@ npm start
 
 O frontend estará rodando em `http://localhost:3000`
 
----
 
 ## Variáveis de Ambiente
 
@@ -171,8 +164,6 @@ O frontend estará rodando em `http://localhost:3000`
 | Variável | Descrição |
 |----------|-----------|
 | `REACT_APP_API_URL` | URL base da API para requisições do frontend |
-
----
 
 ## Rotas da API
 
@@ -220,19 +211,16 @@ Todas as rotas abaixo requerem autenticação JWT.
 
 **Formatos de arquivo aceitos:** PDF, PNG, JPG (até 10MB)
 
----
+
 
 ## Tela Principal
 
-A aplicação conta com uma interface intuitiva e moderna para gerenciar suas partituras:
 
 <p align="center">
   <img src="img/main.png" alt="Tela de Login" width="500" />
 </p>
----
+
 
 ## Autora
-
-**Anna Laura**
 
 Entre em contato: [nalauramoura@gmail.com](mailto:nalauramoura@gmail.com)
